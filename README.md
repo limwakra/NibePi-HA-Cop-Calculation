@@ -3,7 +3,7 @@ Node-Red Flow in combination with Home Assistant, NibePi Cop calculation.
 
 ## Prerequisites
 This tutorial assumes the following:
-- A working nibepi connected to your heat pump and reachable on your local network (Home assistant autodicovery activated)
+- A working nibepi connected to your heat pump and reachable on your local network (MQTT HA Dicovery activated)
 - A working [mqtt server/broker](https://mqtt.org/). Either in Home Assistant as [add-on (instructions link)](https://github.com/home-assistant/addons/blob/174f8e66d0eaa26f01f528beacbde0bd111b711c/mosquitto/DOCS.md#how-to-use) or stand alone.
 - A working [Home Assistant](https://www.home-assistant.io/) system
 - [Node-Red](https://community.home-assistant.io/t/home-assistant-community-add-on-node-red/55023) running as an add-on in Home Assistant.
