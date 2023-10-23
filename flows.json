@@ -1,0 +1,706 @@
+[
+    {
+        "id": "92dc3c206dc3642d",
+        "type": "tab",
+        "label": "Cop calc",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "a02217c58b283be3",
+        "type": "function",
+        "z": "92dc3c206dc3642d",
+        "name": "Cop Calc",
+        "func": "// Maak een functie aan in een Node-RED function node\nvar bt12 = msg.bt12 * 10;\nvar bt3 = msg.bt3 * 10;\nvar bt14 = msg.bt14 * 10;\nvar bt17 = msg.bt17 * 10;\nvar bt10 = msg.bt10 * 10;\nvar cop35 = msg.cop35;\nvar cop45 = msg.cop45;\nvar compressor = msg.compressor;\nvar relay = msg.relay;\n\n// Controleer of de compressor hoger is dan 0\nif (compressor > 0) {\n\n    // Lineaire interpolatiefunctie\n    function lerp(v0, v1, t) {\n        return (1 - t) * v0 + t * v1;\n    }\n\n    // Bereken de COP\n    var cop = lerp(cop35, cop45, (((45.0 - 35.0) * (bt12 / 10.0 - 35.0)) / 100));\n    var copt = 100 * cop * (1 - (((5.0 - (bt12 - bt3)) / 2) / (bt12 - (5.0 / 2) + Math.abs(bt14 - bt12) - (bt10 - Math.abs(bt17 - bt10)))));\n    var result = Math.round(copt); // Afronden naar het dichtstbijzijnde gehele getal\n    var resultcop = result / 100;\n\n\n\n    // tap \n    if (relay == 11 || relay == 15) {\n        var msg1, msg2, msg3;\n        msg1 = { payload: result, topic: \"CopT\" };\n        msg2 = { payload: resultcop, topic: \"Cop Tap\" };\n        msg3 = { payload: \"0\", topic: \"Cop Heat\" };\n        // heat\n    } else if (relay == 3 || relay == 7) {\n        var msg1, msg2, msg3;\n        msg1 = { payload: result, topic: \"CopT\" };\n        msg2 = { payload: \"0\", topic: \"Cop Tap\" };\n        msg3 = { payload: resultcop, topic: \"Cop Heat\" };\n    } else {\n        // Als de compressor niet hoger is dan 0, stuur 0\n        var msg1, msg2, msg3;\n        msg1 = { payload: \"0\", topic: \"CopT\" };\n        msg2 = { payload: \"0\", topic: \"Cop Tap\" };\n        msg3 = { payload: \"0\", topic: \"Cop Heat\" };\n    }\n} else {\n    // Als de compressor niet hoger is dan 0, stuur 0\n    msg1 = { payload: \"0\", topic: \"CopT\" };\n    msg2 = { payload: \"0\", topic: \"Cop Tap\" };\n    msg3 = { payload: \"0\", topic: \"Cop Heat\" };\n}\n\nreturn [msg1, msg2, msg3];\n",
+        "outputs": 3,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 60,
+        "wires": [
+            [
+                "3b1c1e6147c0d2d0",
+                "eb078517c724093d",
+                "27ca2343f1b8876e"
+            ],
+            [
+                "3b1c1e6147c0d2d0",
+                "5bda78223519d0e5",
+                "6ab3a6852ebbcb13"
+            ],
+            [
+                "3b1c1e6147c0d2d0",
+                "e30a9b39107f12a2",
+                "6ab3a6852ebbcb13"
+            ]
+        ]
+    },
+    {
+        "id": "9266c6b688f8cdc4",
+        "type": "api-current-state",
+        "z": "92dc3c206dc3642d",
+        "name": "bt12",
+        "server": "c4e336ac.6ae518",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.nibe_eb100_ep14_bt12_condensor_out",
+        "state_type": "num",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "bt12",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entityState"
+            }
+        ],
+        "for": "0",
+        "forType": "num",
+        "forUnits": "minutes",
+        "override_topic": false,
+        "state_location": "payload",
+        "override_payload": "msg",
+        "entity_location": "data",
+        "override_data": "msg",
+        "x": 210,
+        "y": 40,
+        "wires": [
+            [
+                "1b1e524f2f16bd4b"
+            ]
+        ]
+    },
+    {
+        "id": "ab88beafc5f51e67",
+        "type": "api-current-state",
+        "z": "92dc3c206dc3642d",
+        "name": "bt3",
+        "server": "c4e336ac.6ae518",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.nibe_eb100_ep14_bt3_return_temp",
+        "state_type": "num",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "bt3",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entityState"
+            }
+        ],
+        "for": "0",
+        "forType": "num",
+        "forUnits": "minutes",
+        "override_topic": false,
+        "state_location": "payload",
+        "override_payload": "msg",
+        "entity_location": "data",
+        "override_data": "msg",
+        "x": 210,
+        "y": 80,
+        "wires": [
+            [
+                "1b1e524f2f16bd4b"
+            ]
+        ]
+    },
+    {
+        "id": "3cd217caa67bb787",
+        "type": "api-current-state",
+        "z": "92dc3c206dc3642d",
+        "name": "bt14",
+        "server": "c4e336ac.6ae518",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.nibe_eb100_ep14_bt14_hot_gas_temp",
+        "state_type": "num",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "bt14",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entityState"
+            }
+        ],
+        "for": "0",
+        "forType": "num",
+        "forUnits": "minutes",
+        "override_topic": false,
+        "state_location": "payload",
+        "override_payload": "msg",
+        "entity_location": "data",
+        "override_data": "msg",
+        "x": 210,
+        "y": 120,
+        "wires": [
+            [
+                "1b1e524f2f16bd4b"
+            ]
+        ]
+    },
+    {
+        "id": "af58201483918984",
+        "type": "api-current-state",
+        "z": "92dc3c206dc3642d",
+        "name": "bt17",
+        "server": "c4e336ac.6ae518",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.nibe_eb100_ep14_bt17_suction",
+        "state_type": "num",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "bt17",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entityState"
+            }
+        ],
+        "for": "0",
+        "forType": "num",
+        "forUnits": "minutes",
+        "override_topic": false,
+        "state_location": "payload",
+        "override_payload": "msg",
+        "entity_location": "data",
+        "override_data": "msg",
+        "x": 210,
+        "y": 160,
+        "wires": [
+            [
+                "1b1e524f2f16bd4b"
+            ]
+        ]
+    },
+    {
+        "id": "efd7b528162ed2f9",
+        "type": "api-current-state",
+        "z": "92dc3c206dc3642d",
+        "name": "bt10",
+        "server": "c4e336ac.6ae518",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.nibe_eb100_ep14_bt10_brine_in_temp",
+        "state_type": "num",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "bt10",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entityState"
+            }
+        ],
+        "for": "0",
+        "forType": "num",
+        "forUnits": "minutes",
+        "override_topic": false,
+        "state_location": "payload",
+        "override_payload": "msg",
+        "entity_location": "data",
+        "override_data": "msg",
+        "x": 210,
+        "y": 200,
+        "wires": [
+            [
+                "1b1e524f2f16bd4b"
+            ]
+        ]
+    },
+    {
+        "id": "dafef8bf9e314be5",
+        "type": "inject",
+        "z": "92dc3c206dc3642d",
+        "name": "",
+        "props": [],
+        "repeat": "30",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 60,
+        "y": 80,
+        "wires": [
+            [
+                "9266c6b688f8cdc4",
+                "ab88beafc5f51e67",
+                "3cd217caa67bb787",
+                "af58201483918984",
+                "efd7b528162ed2f9",
+                "0f565b1b87b9b7ab",
+                "7319958c75d26f02",
+                "327ac8daac3a28a0"
+            ]
+        ]
+    },
+    {
+        "id": "3b1c1e6147c0d2d0",
+        "type": "debug",
+        "z": "92dc3c206dc3642d",
+        "name": "debug Cop Calc",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 800,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "0f565b1b87b9b7ab",
+        "type": "change",
+        "z": "92dc3c206dc3642d",
+        "name": "COP 35 & 45",
+        "rules": [
+            {
+                "t": "set",
+                "p": "cop35",
+                "pt": "msg",
+                "to": "4.72",
+                "tot": "num"
+            },
+            {
+                "t": "set",
+                "p": "cop45",
+                "pt": "msg",
+                "to": "3.61",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 230,
+        "y": 340,
+        "wires": [
+            [
+                "1b1e524f2f16bd4b"
+            ]
+        ]
+    },
+    {
+        "id": "1b1e524f2f16bd4b",
+        "type": "join",
+        "z": "92dc3c206dc3642d",
+        "name": "",
+        "mode": "custom",
+        "build": "merged",
+        "property": "",
+        "propertyType": "full",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "9",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 430,
+        "y": 60,
+        "wires": [
+            [
+                "a02217c58b283be3"
+            ]
+        ]
+    },
+    {
+        "id": "7319958c75d26f02",
+        "type": "api-current-state",
+        "z": "92dc3c206dc3642d",
+        "name": "compressor",
+        "server": "c4e336ac.6ae518",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.nibe_compressor_frequency_actual",
+        "state_type": "num",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "compressor",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entityState"
+            }
+        ],
+        "for": "0",
+        "forType": "num",
+        "forUnits": "minutes",
+        "override_topic": false,
+        "state_location": "payload",
+        "override_payload": "msg",
+        "entity_location": "data",
+        "override_data": "msg",
+        "x": 230,
+        "y": 280,
+        "wires": [
+            [
+                "1b1e524f2f16bd4b"
+            ]
+        ]
+    },
+    {
+        "id": "327ac8daac3a28a0",
+        "type": "api-current-state",
+        "z": "92dc3c206dc3642d",
+        "name": "Relay pca",
+        "server": "c4e336ac.6ae518",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.nibe_eb100_ep14_pca_base_relays",
+        "state_type": "num",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "relay",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entityState"
+            }
+        ],
+        "for": "0",
+        "forType": "num",
+        "forUnits": "minutes",
+        "override_topic": false,
+        "state_location": "payload",
+        "override_payload": "msg",
+        "entity_location": "data",
+        "override_data": "msg",
+        "x": 220,
+        "y": 240,
+        "wires": [
+            [
+                "1b1e524f2f16bd4b"
+            ]
+        ]
+    },
+    {
+        "id": "eb078517c724093d",
+        "type": "ha-mqtt-sensor",
+        "z": "92dc3c206dc3642d",
+        "server": "9fedca0d.c87928",
+        "device": "a1112cf1f802721c",
+        "name": "nibe_copt",
+        "unit_of_measurement": "",
+        "config": "{\"unit_of_measurement\":\"c\",\"icon\":\"mdi:temperature\"}",
+        "x": 780,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "5bda78223519d0e5",
+        "type": "ha-mqtt-sensor",
+        "z": "92dc3c206dc3642d",
+        "server": "9fedca0d.c87928",
+        "device": "a1112cf1f802721c",
+        "name": "nibe_cop_tap",
+        "unit_of_measurement": "",
+        "config": "{\"unit_of_measurement\":\"c\",\"icon\":\"mdi:temperature\"}",
+        "x": 800,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "e30a9b39107f12a2",
+        "type": "ha-mqtt-sensor",
+        "z": "92dc3c206dc3642d",
+        "server": "9fedca0d.c87928",
+        "device": "a1112cf1f802721c",
+        "name": "nibe_cop_heat",
+        "unit_of_measurement": "",
+        "config": "{\"unit_of_measurement\":\"c\",\"icon\":\"mdi:temperature\"}",
+        "x": 800,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "6ab3a6852ebbcb13",
+        "type": "ui_chart",
+        "z": "92dc3c206dc3642d",
+        "name": "",
+        "group": "bde07dfe5bb4c4d2",
+        "order": 2,
+        "width": 20,
+        "height": "10",
+        "label": "Cop Tap & verwarming",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "86400",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#ff291d",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 820,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ff4dc6d039a8fc4f",
+        "type": "comment",
+        "z": "92dc3c206dc3642d",
+        "name": "Cop waarde 35 en 45 aanpassen op basis van je eigen warmtepomp specificaties. Open voor meer info.",
+        "info": "Zoek de info op:https://www.nibe.eu/download/18.1cc0394d170d53b08f050cd/1588745727886/Prijscatalogus%202020%20LR%20def.pdf\n\nKijk bij jou pomp voor de cop waarde naar:\nCOP bij 0/35 °C volgens EN14511 nominaal, 50 Hz\nCOP bij 0/45 °C volgens EN14511 nominaal, 50 Hz\n",
+        "x": 440,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "27ca2343f1b8876e",
+        "type": "ui_chart",
+        "z": "92dc3c206dc3642d",
+        "name": "",
+        "group": "bde07dfe5bb4c4d2",
+        "order": 6,
+        "width": 20,
+        "height": "10",
+        "label": "CopT",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "86400",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 770,
+        "y": 20,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7265b141b46b96c1",
+        "type": "ui_spacer",
+        "z": "92dc3c206dc3642d",
+        "name": "spacer",
+        "group": "bde07dfe5bb4c4d2",
+        "order": 1,
+        "width": 20,
+        "height": 1
+    },
+    {
+        "id": "dcf57571070d9ad5",
+        "type": "ui_spacer",
+        "z": "92dc3c206dc3642d",
+        "name": "spacer",
+        "group": "bde07dfe5bb4c4d2",
+        "order": 3,
+        "width": 20,
+        "height": 1
+    },
+    {
+        "id": "b79d5532d4cc824e",
+        "type": "ui_spacer",
+        "z": "92dc3c206dc3642d",
+        "name": "spacer",
+        "group": "bde07dfe5bb4c4d2",
+        "order": 4,
+        "width": 20,
+        "height": 1
+    },
+    {
+        "id": "92fed881c207bcee",
+        "type": "ui_spacer",
+        "z": "92dc3c206dc3642d",
+        "name": "spacer",
+        "group": "bde07dfe5bb4c4d2",
+        "order": 5,
+        "width": 20,
+        "height": 1
+    },
+    {
+        "id": "16dd830cf2e55d79",
+        "type": "ui_spacer",
+        "z": "92dc3c206dc3642d",
+        "name": "spacer",
+        "group": "bde07dfe5bb4c4d2",
+        "order": 1,
+        "width": 20,
+        "height": 1
+    },
+    {
+        "id": "ac85122101957be9",
+        "type": "ui_spacer",
+        "z": "92dc3c206dc3642d",
+        "name": "spacer",
+        "group": "bde07dfe5bb4c4d2",
+        "order": 3,
+        "width": 20,
+        "height": 1
+    },
+    {
+        "id": "8646ef092f820a21",
+        "type": "ui_spacer",
+        "z": "92dc3c206dc3642d",
+        "name": "spacer",
+        "group": "bde07dfe5bb4c4d2",
+        "order": 4,
+        "width": 20,
+        "height": 1
+    },
+    {
+        "id": "0900e7ef7715c8db",
+        "type": "ui_spacer",
+        "z": "92dc3c206dc3642d",
+        "name": "spacer",
+        "group": "bde07dfe5bb4c4d2",
+        "order": 5,
+        "width": 20,
+        "height": 1
+    },
+    {
+        "id": "c4e336ac.6ae518",
+        "type": "server",
+        "name": "Home Assistant",
+        "version": 5,
+        "addon": true,
+        "rejectUnauthorizedCerts": true,
+        "ha_boolean": "y|yes|true|on|home|open",
+        "connectionDelay": true,
+        "cacheJson": true,
+        "heartbeat": false,
+        "heartbeatInterval": "30",
+        "areaSelector": "friendlyName",
+        "deviceSelector": "friendlyName",
+        "entitySelector": "friendlyName",
+        "statusSeparator": "at: ",
+        "statusYear": "hidden",
+        "statusMonth": "short",
+        "statusDay": "numeric",
+        "statusHourCycle": "h23",
+        "statusTimeFormat": "h:m",
+        "enableGlobalContextStore": true
+    },
+    {
+        "id": "9fedca0d.c87928",
+        "type": "mqtt-broker",
+        "name": "homeassistant",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "compatmode": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "a1112cf1f802721c",
+        "type": "ha-mqtt-device",
+        "name": "Nibe Cop",
+        "config": ""
+    },
+    {
+        "id": "bde07dfe5bb4c4d2",
+        "type": "ui_group",
+        "name": "Nibe Cop",
+        "tab": "f2e49dc9cf182220",
+        "order": 1,
+        "disp": true,
+        "width": "20",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "f2e49dc9cf182220",
+        "type": "ui_tab",
+        "name": "Nibe",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
