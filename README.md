@@ -1,5 +1,8 @@
 # NibePi-HA-Cop-Calculation
-Node-Red Flow in combination with Home Assistant, NibePi Cop calculation.
+Node-Red Flow in combination with Home Assistant, NibePi Nibe Cop calculation.
+
+Calculation is based on [link](https://github.com/karhulitos/MLPlogintutkija)
+
 
 ## Prerequisites
 This tutorial assumes the following:
