@@ -13,8 +13,8 @@ This tutorial assumes the following:
 - In Node-Red add [node-red-contrib-ha-mqtt](https://flows.nodered.org/node/node-red-contrib-ha-mqtt) To push the data back to Home Assistant.
 - In NibePi activate these in "Datahantering":
   * EB100-EP14-BT3(40012) = BT3
-  * EB100-EP14-BT10(40015) = BT10
-  * EB100-EP14-BT12(40017) = BT12
+  * EB100-EP14-BT10(40015) = BT10 (replace with outdoortemperature if you have heatpump with external unit BT28 or BT1)
+  * EB100-EP14-BT12(40017) = BT12 (replace with BT2 if you have heatpump with external unit)
   * EB100-EP14-BT14(40018) = BT14
   * EB100-EP14-BT17(40022) = BT17
   * Compressor frequency, Actual (43136)
