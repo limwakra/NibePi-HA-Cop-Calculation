@@ -10,6 +10,7 @@ This tutorial assumes the following:
 - A working [mqtt server/broker](https://mqtt.org/). Either in Home Assistant as [add-on (instructions link)](https://github.com/home-assistant/addons/blob/174f8e66d0eaa26f01f528beacbde0bd111b711c/mosquitto/DOCS.md#how-to-use) or stand alone.
 - A working [Home Assistant](https://www.home-assistant.io/) system
 - [Node-Red](https://community.home-assistant.io/t/home-assistant-community-add-on-node-red/55023) running as an add-on in Home Assistant.
+- In Node-red add [node-red-contrib-home-assistant-websocket](https://flows.nodered.org/node/node-red-contrib-home-assistant-websocket) To get data from HA.
 - In Node-Red add [node-red-contrib-ha-mqtt](https://flows.nodered.org/node/node-red-contrib-ha-mqtt) To push the data back to Home Assistant.
 - In NibePi activate these in "Datahantering":
   * EB100-EP14-BT3(40012) = BT3
